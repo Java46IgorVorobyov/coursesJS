@@ -12,7 +12,7 @@ export function getRandomElement(arr) {
 
 export function getRandomDate(minYear, maxYear) {
     
-    const day = getRandomNumber(1, 28)
+    const day = getRandomNumber(0, 28)
     const month = getRandomNumber(1, 12)
     const year = getRandomNumber(minYear, maxYear)
     
