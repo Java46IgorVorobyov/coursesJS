@@ -4,19 +4,19 @@ export function getRandomNumber(min, max) {
 
 }
 
-export function getRandomElement(arr) {
+export function getRandomElement(array) {
 
-    return arr[getRandomNumber(0, arr.length-1)]
+    return array[getRandomNumber(0, array.length-1)]
 
 }
 
 export function getRandomDate(minYear, maxYear) {
     
-    const day = getRandomNumber(1, 28)
-    const month = getRandomNumber(1, 12)
+    const day = getRandomNumber(1, 31)
+    const month = getRandomNumber(0, 11)
     const year = getRandomNumber(minYear, maxYear)
-    
-    return new Date (year, month, day).toLocaleDateString()
+    const date = new Date(year, month, day)
+    return date.toString()
 }
 
 
