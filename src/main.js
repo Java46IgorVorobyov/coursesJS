@@ -2,31 +2,46 @@ import courseData from './config/courseData.json'
 import College from './services/college'
 import Courses from './services/courses';
 import FormHandler from './ui/form_handler';
+import TableHandler from './ui/table_handler';
 import { getRandomCourse } from './utils/randomeCourse';
 
-const N_COURSES = 5;
-
-function createCourses() {
-    const courses = [];
-    for (let i = 0; i < N_COURSES; i++) {
-        courses.push(getRandomCourse(courseData));
+const N_COURSES = 5
+function createCourse() {
+    const courses = []
+    for(let i = 0; i < N_COURSES; i++) {
+        courses.push(getRandomCourse(courseData))
     }
-    return courses;
-}
-function getCourseItems(courses) {
-    return courses.map(c => `<p>${JSON.stringify(c)}</p>`).join('');
+    return courses
 }
 
-const element = document.getElementById('courses')
-const courses = createCourses()
-element.innerHTML = `${getCourseItems(courses)}`
-const getTheDate = new Courses(courseData.minId, courseData.maxId, courses)
-const formTheDate = new College(getTheDate, courseData)
-const formHandler = new FormHandler("courses-form", "alert")
+const courses = createCourse()
+
+const dataProvider = new Courses(courseData.minId, courseData.maxId, courses)
+const dataProcessor = new College(dataProvider, courseData)
+const tableHandler = new TableHandler([
+    {key: 'id', displayName: 'ID'},
+    {key: 'name', displayName: 'Course Name'},
+    {key: 'lecturer', displayName: 'Lecturer Name'},
+    {key: 'cost', displayName: 'Cost (ILS)'},
+    {key: 'hours', displayName: 'Course Duration (h)'}
+], 'courses-table')
+const formHandler = new FormHandler('courses-form', 'alert')
 formHandler.addHandler(course => {
-    const message = formTheDate.addCourse(course)
-    if(typeof message != 'string') {
-        element.innerHTML += `<p>${JSON.stringify(course)}</p>`
-    }else return message
+    const res = dataProcessor.addCourse(course)
+    if(typeof (res) !== 'string') {
+        return ''
+    }
+    return res
 })
-    
+
+formHandler.fillOptions('course-name-options', courseData.courses)
+formHandler.fillOptions('lecturer-options', courseData.lectors)
+
+window.showForm = () => {
+    formHandler.show();
+    tableHandler.hideTable();
+}
+window.showCourses = () => {
+    tableHandler.showTable(dataProcessor.getAllCourses());
+    formHandler.hide();
+}

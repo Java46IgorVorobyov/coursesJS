@@ -19,16 +19,15 @@ export default class Courses {
     }
     #getId() {
         let id
-        do{
+        do {
             id = getRandomNumber(this.#minId, this.#maxId)
-        }while (this.exists(id))
+        }while(this.exists(id))
         return id
     }
-    //TODO 
-     exists(id) {
-        return !!(this.#courses.find(courses => {
-            courses.id === id
-        }))
+    exists(id) {
+        return !!this.#courses.find(c => c.id === id)
     }
-
+    get() {
+        return this.#courses
+    }
 }

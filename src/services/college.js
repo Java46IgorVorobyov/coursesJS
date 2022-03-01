@@ -6,39 +6,33 @@ export default class College {
         this.#courseData = courseData
     } 
     addCourse(course) {
-        let validationMessage
-        course.openingDate = new Date(course.openingDate)
-        course.cost = +course.cost
         course.hours = +course.hours
-        validationMessage = this.#checkValidation(course, validationMessage)
+        course.cost = +course.cost
+        course.openingDate = new Date(course.openingDate)
+        const validationMessage = this.#getValidationMessage(course)
         if(!validationMessage) {
             return this.#courses.add(course)
         }
         return validationMessage
     }
-    #checkValidation(course, validationMessage) {
-        if(course.cost < 5000 || course.cost > 30000) {
-            return validationMessage = this.#getValidationMessage( 1)
-        }
-        if(course.hours < 80 || course.hours > 500) {
-            return validationMessage = this.#getValidationMessage( 2)
-        }
-        if(course.openingDate.getYear() < 100 || course.openingDate.getYear() > 122) {
-            return validationMessage = this.#getValidationMessage( 3)
-        } 
-        else {
-            validationMessage = this.#getValidationMessage()
-        }
-        return validationMessage
+    #getValidationMessage(course) {
+        const { minCost, maxCost, minHours, maxHours, minYear, maxYear, lectors, courses } = this.#courseData
+        const { cost, hours, openingDate, lecturer, name } = course
+
+        let message = ''
+        message += cost > maxCost || cost < minCost ?
+        `wrong cost value - should be in range [${minCost}-${maxCost}] <br>`: ''
+        message += hours > maxHours || hours < minHours ?
+        `wrong hours value - should be in range [${minHours}-${maxHours}] <br>`: ''
+        message += !lectors.includes(lecturer) ? `wrong course name - should be one from ${courses}` : ''
+        message += !courses.includes(name) ? `wrong course name - should be one from ${courses}` : ''
+        const year = openingDate.getFullYear()
+        message += year < minYear || year > maxYear ?
+        `wrong opening date - year should be in range [${minYear} - ${maxYear}]` : ''
+        return message
     }
-    #getValidationMessage(numberOfError) {
-        let wrong = ''
-        switch(wrong) {
-            case 1 : wrong = wrong + 'Cost should be between 5000 and 30000'; return wrong
-            case 2 : wrong = wrong + 'Hours should be between 80 and 500'; return wrong
-            case 3 : wrong = wrong + 'Year should be between 2000 and 2022'; return wrong
-            default: return wrong
-        }
+    getAllCourses() {
+        return this.#courses.get()
     }
 }
 
