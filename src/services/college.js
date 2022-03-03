@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 export default class College {
     #courseData
     #courses
@@ -33,6 +35,9 @@ export default class College {
     }
     getAllCourses() {
         return this.#courses.get()
+    }
+    sortCourses(key) {
+        return _.sortBy(this.getAllCourses(), key)
     }
 }
 
