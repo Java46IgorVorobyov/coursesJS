@@ -39,6 +39,43 @@ export default class College {
     sortCourses(key) {
         return _.sortBy(this.getAllCourses(), key)
     }
+    // getHoursStatistics(lengthInterval) {
+    //     let interval = lengthInterval.interval
+    //     let array = this.#courses.get()
+    //     let objStat = _.countBy(array, e => {
+    //         return Math.floor(e.interva / interval) * interval
+    //     })
+    //     return this.#countByStatistic(objStat, interval)
+    // }
+    // getCostStatistics(lengthInterval) {
+    //     let interval = lengthInterval.interval
+    //     let array = this.#courses.get()
+    //     let objStat = _.countBy(array, e => {
+    //         return Math.floor(e.intervalCost / interval) * interval
+    //     })
+    //     return this.#countByStatistic(objStat, interval)
+    // }
+    // #countByStatistic(objStat, lengthInterval) {
+    //     let result = []
+    //     for(let key in objStat) {
+    //         let minInterval = key
+    //         let maxInterval = +key + +lengthInterval - 1
+    //         let amount = objStat[key]
+    //         result.push({ minInterval: minInterval, maxInterval: maxInterval, amount: amount })
+    //     }
+    //     return result
+    // } 
+
+    getStatistics(lengthInterval, key) {
+        const courses = this.getAllCourses();
+        const statistics = _.countBy(courses, (course) => Math.floor(course[key] / lengthInterval));
+        return Object.entries(statistics).map( e => (
+            {
+            minInterval : e[0] * lengthInterval, 
+            maxInterval : (e[0] * lengthInterval) + (lengthInterval - 1),
+            amount : e[1] 
+            }));
+    }
 }
 
 // 'Name was not added to the list'

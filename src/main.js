@@ -5,8 +5,9 @@ import FormHandler from './ui/form_handler';
 import TableHandler from './ui/table_handler';
 import { getRandomCourse } from './utils/randomeCourse';
 import _ from 'lodash'
+import { Tab } from 'bootstrap';
 
-const N_COURSES = 5
+const N_COURSES = 10
 function createCourse() {
     const courses = []
     for(let i = 0; i < N_COURSES; i++) {
@@ -26,7 +27,14 @@ const tableHandler = new TableHandler([
     {key: 'cost', displayName: 'Cost (ILS)'},
     {key: 'hours', displayName: 'Course Duration (h)'}
 ], 'courses-table', 'sortCourses')
+const statColumn = new TableHandler([
+    {key: 'minInterval', displayName: 'Min Interval'},
+    {key: 'maxInterval', displayName: 'Max Interval'},
+    {key: 'amount', displayName: 'Amount'}
+], 'courses-table')
+
 const formHandler = new FormHandler('courses-form', 'alert')
+
 formHandler.addHandler(course => {
     const res = dataProcessor.addCourse(course)
     if(typeof (res) !== 'string') {
@@ -35,12 +43,14 @@ formHandler.addHandler(course => {
     return res
 })
 
+
 formHandler.fillOptions('course-name-options', courseData.courses)
 formHandler.fillOptions('lecturer-options', courseData.lectors)
 
 window.showForm = () => {
     formHandler.show();
     tableHandler.hideTable();
+    statColumn.hideTable()
 }
 window.showCourses = () => {
     tableHandler.showTable(dataProcessor.getAllCourses());
@@ -48,4 +58,12 @@ window.showCourses = () => {
 }
 window.sortCourses = (key) => {
     tableHandler.showTable(dataProcessor.sortCourses(key))
+}
+window.showHoursStat = () => {
+    formHandler.hide()
+    statColumn.showTable(dataProcessor.getStatistics(courseData.intervalHours, 'hours'))
+}
+window.showCostStat = () => {
+    formHandler.hide()
+    statColumn.showTable(dataProcessor.getStatistics(courseData.intervalCost, 'cost'))
 }
