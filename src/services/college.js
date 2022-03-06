@@ -78,8 +78,3 @@ export default class College {
     }
 }
 
-// 'Name was not added to the list'
-// 'Lecturer was not added to the list'
-// 'Hours should be between 80 and 500'
-// 'Cost should be between 5000 and 30000'
-// 'Year should be between 2000 and 2022'
