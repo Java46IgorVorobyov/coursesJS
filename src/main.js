@@ -5,12 +5,12 @@ import FormHandler from './ui/form_handler';
 import TableHandler from './ui/table_handler';
 import { getRandomCourse } from './utils/randomeCourse';
 import _ from 'lodash'
-import { Tab } from 'bootstrap';
+
 
 const N_COURSES = 10
 function createCourse() {
     const courses = []
-    for(let i = 0; i < N_COURSES; i++) {
+    for (let i = 0; i < N_COURSES; i++) {
         courses.push(getRandomCourse(courseData))
     }
     return courses
@@ -21,23 +21,23 @@ const courses = createCourse()
 const dataProvider = new Courses(courseData.minId, courseData.maxId, courses)
 const dataProcessor = new College(dataProvider, courseData)
 const tableHandler = new TableHandler([
-    {key: 'id', displayName: 'ID'},
-    {key: 'name', displayName: 'Course Name'},
-    {key: 'lecturer', displayName: 'Lecturer Name'},
-    {key: 'cost', displayName: 'Cost (ILS)'},
-    {key: 'hours', displayName: 'Course Duration (h)'}
-], 'courses-table', 'sortCourses')
+    { key: 'id', displayName: 'ID' },
+    { key: 'name', displayName: 'Course Name' },
+    { key: 'lecturer', displayName: 'Lecturer Name' },
+    { key: 'cost', displayName: 'Cost (ILS)' },
+    { key: 'hours', displayName: 'Course Duration (h)' }
+], 'courses-table', 'sortCourses', 'removeCourse')
 const statColumn = new TableHandler([
-    {key: 'minInterval', displayName: 'Min Interval'},
-    {key: 'maxInterval', displayName: 'Max Interval'},
-    {key: 'amount', displayName: 'Amount'}
+    { key: 'minInterval', displayName: 'Min Interval' },
+    { key: 'maxInterval', displayName: 'Max Interval' },
+    { key: 'amount', displayName: 'Amount' }
 ], 'courses-table')
 
 const formHandler = new FormHandler('courses-form', 'alert')
 
 formHandler.addHandler(course => {
     const res = dataProcessor.addCourse(course)
-    if(typeof (res) !== 'string') {
+    if (typeof (res) !== 'string') {
         return ''
     }
     return res
@@ -48,13 +48,13 @@ formHandler.fillOptions('course-name-options', courseData.courses)
 formHandler.fillOptions('lecturer-options', courseData.lectors)
 
 window.showForm = () => {
-    formHandler.show();
-    tableHandler.hideTable();
+    formHandler.show()
+    tableHandler.hideTable()
     statColumn.hideTable()
 }
 window.showCourses = () => {
     tableHandler.showTable(dataProcessor.getAllCourses());
-    formHandler.hide();
+    formHandler.hide()
 }
 window.sortCourses = (key) => {
     tableHandler.showTable(dataProcessor.sortCourses(key))
@@ -66,4 +66,11 @@ window.showHoursStat = () => {
 window.showCostStat = () => {
     formHandler.hide()
     statColumn.showTable(dataProcessor.getStatistics(courseData.intervalCost, 'cost'))
+}
+window.removeCourse = (id) => {
+    if (window.confirm(`You are going to remove course id: ${id}`)) {
+        dataProcessor.removeCourse(+id)
+        tableHandler.showTable(dataProcessor.getAllCourses())
+    }
+
 }

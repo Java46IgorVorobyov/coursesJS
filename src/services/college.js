@@ -76,5 +76,11 @@ export default class College {
             amount : e[1] 
             }));
     }
+    removeCourse(id) {
+        if (!this.#courses.exists(id)) {
+            throw `course with id ${id} not found`
+        }
+        return this.#courses.remove(id)
+    }
 }
 
