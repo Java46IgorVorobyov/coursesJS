@@ -1,86 +1,68 @@
-import _ from "lodash"
+import _ from "lodash";
 
+// Data processor
 export default class College {
     #courseData
     #courses
     constructor(courses, courseData) {
-        this.#courses = courses
-        this.#courseData = courseData
-    } 
-    addCourse(course) {
-        course.hours = +course.hours
-        course.cost = +course.cost
-        course.openingDate = new Date(course.openingDate)
-        const validationMessage = this.#getValidationMessage(course)
+        this.#courses = courses;
+        this.#courseData = courseData;
+    }
+    async addCourse(course) {
+        course.hours = +course.hours;
+        course.cost = +course.cost;
+        course.openingDate = new Date(course.openingDate);
+        const validationMessage = this.#getValidationMessage(course);
         if(!validationMessage) {
-            return this.#courses.add(course)
-        }
-        return validationMessage
+           return await this.#courses.add(course);
+        } 
+        return validationMessage;
     }
     #getValidationMessage(course) {
-        const { minCost, maxCost, minHours, maxHours, minYear, maxYear, lectors, courses } = this.#courseData
-        const { cost, hours, openingDate, lecturer, name } = course
-
-        let message = ''
+        const {minCost, maxCost, minHours, maxHours, minYear, maxYear, lectors, courses} = this.#courseData;
+        const {cost, hours, openingDate, lecturer, name} = course
+        
+        let message = '';
         message += cost > maxCost || cost < minCost ?
-        `wrong cost value - should be in range [${minCost}-${maxCost}] <br>`: ''
-        message += hours > maxHours || hours < minHours ?
-        `wrong hours value - should be in range [${minHours}-${maxHours}] <br>`: ''
-        message += !lectors.includes(lecturer) ? `wrong course name - should be one from ${courses}` : ''
-        message += !courses.includes(name) ? `wrong course name - should be one from ${courses}` : ''
-        const year = openingDate.getFullYear()
-        message += year < minYear || year > maxYear ?
-        `wrong opening date - year should be in range [${minYear} - ${maxYear}]` : ''
-        return message
+         `wrong cost value - should be in range [${minCost}-${maxCost}] <br>`: '';
+         message += hours > maxHours || hours < minHours ?
+         `wrong hours value - should be in range [${minHours}-${maxHours}] <br>`: '';
+         message += !lectors.includes(lecturer) ? `wrong lecturer name - should be one from ${lectors} <br>`: '';
+         message += !courses.includes(name) ? `wrong course name - should be one from ${courses}`:'';
+         const year = openingDate.getFullYear();
+         message += year < minYear || year > maxYear ?
+          `wrong opening date - year should be in range [${minYear} - ${maxYear}]` : ''
+         return message;
     }
-    getAllCourses() {
-        return this.#courses.get()
+    async getAllCourses() {
+        return await this.#courses.get()
     }
-    sortCourses(key) {
-        return _.sortBy(this.getAllCourses(), key)
+    async sortCourses(key) {
+        return _.sortBy(await this.getAllCourses(), key)
     }
-    // getHoursStatistics(lengthInterval) {
-    //     let interval = lengthInterval.interval
-    //     let array = this.#courses.get()
-    //     let objStat = _.countBy(array, e => {
-    //         return Math.floor(e.interva / interval) * interval
-    //     })
-    //     return this.#countByStatistic(objStat, interval)
-    // }
-    // getCostStatistics(lengthInterval) {
-    //     let interval = lengthInterval.interval
-    //     let array = this.#courses.get()
-    //     let objStat = _.countBy(array, e => {
-    //         return Math.floor(e.intervalCost / interval) * interval
-    //     })
-    //     return this.#countByStatistic(objStat, interval)
-    // }
-    // #countByStatistic(objStat, lengthInterval) {
-    //     let result = []
-    //     for(let key in objStat) {
-    //         let minInterval = key
-    //         let maxInterval = +key + +lengthInterval - 1
-    //         let amount = objStat[key]
-    //         result.push({ minInterval: minInterval, maxInterval: maxInterval, amount: amount })
-    //     }
-    //     return result
-    // } 
-
-    getStatistics(lengthInterval, key) {
-        const courses = this.getAllCourses();
-        const statistics = _.countBy(courses, (course) => Math.floor(course[key] / lengthInterval));
-        return Object.entries(statistics).map( e => (
-            {
-            minInterval : e[0] * lengthInterval, 
-            maxInterval : (e[0] * lengthInterval) + (lengthInterval - 1),
-            amount : e[1] 
-            }));
+   async #getStatistics(interval, field) {
+        const courses = await this.getAllCourses();
+        const objStat =  _.countBy(courses, e => {   
+            return Math.floor(e[field]/interval);
+         });
+         return Object.keys(objStat).map(s => {
+             return {minInterval: s * interval,
+                 maxInterval: s * interval + interval -1,
+                amount: objStat[s]}
+         })
+    }
+    async getHoursStatistics(lengthInterval){
+        return await this.#getStatistics(lengthInterval, 'hours');
+    }
+    async getCostStatistics(lengthInterval) {
+        return await this.#getStatistics(lengthInterval, 'cost')
     }
     removeCourse(id) {
         if (!this.#courses.exists(id)) {
             throw `course with id ${id} not found`
         }
-        return this.#courses.remove(id)
+        return this.#courses.remove(id);
     }
-}
 
+   
+}
