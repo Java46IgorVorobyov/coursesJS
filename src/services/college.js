@@ -9,11 +9,13 @@ export default class College {
         this.#courseData = courseData;
     }
     async addCourse(course) {
+        
         course.hours = +course.hours;
         course.cost = +course.cost;
-        course.openingDate = new Date(course.openingDate);
         const validationMessage = this.#getValidationMessage(course);
+        course.openingDate = `${course.openingDate.getFullYear()}-${course.openingDate.getMonth().toString().padStart(2, '0')}-${course.openingDate.getDate().toString().padStart(2, '0')}`
         if(!validationMessage) {
+            console.log(course);
            return await this.#courses.add(course);
         } 
         return validationMessage;
@@ -40,7 +42,7 @@ export default class College {
     async sortCourses(key) {
         return _.sortBy(await this.getAllCourses(), key)
     }
-   async #getStatistics(interval, field) {
+    async #getStatistics(interval, field) {
         const courses = await this.getAllCourses();
         const objStat =  _.countBy(courses, e => {   
             return Math.floor(e[field]/interval);
@@ -51,17 +53,17 @@ export default class College {
                 amount: objStat[s]}
          })
     }
-    async getHoursStatistics(lengthInterval){
-        return await this.#getStatistics(lengthInterval, 'hours');
+      getHoursStatistics(lengthInterval){
+        return this.#getStatistics(lengthInterval, 'hours');
     }
-    async getCostStatistics(lengthInterval) {
-        return await this.#getStatistics(lengthInterval, 'cost')
+    getCostStatistics(lengthInterval) {
+        return this.#getStatistics(lengthInterval, 'cost')
     }
-    removeCourse(id) {
-        if (!this.#courses.exists(id)) {
+    async removeCourse(id) {
+        if (!await this.#courses.exists(id)) {
             throw `course with id ${id} not found`
         }
-        return this.#courses.remove(id);
+        return await this.#courses.remove(id);
     }
 
    

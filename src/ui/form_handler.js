@@ -22,7 +22,7 @@ export default class FormHandler {
             } else {
                 const alert = `
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> ${JSON.stringify(message)}.
+                <strong>Error!</strong> ${message}.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
             this.#alertElement.innerHTML = alert;
@@ -30,7 +30,7 @@ export default class FormHandler {
         })
     }
     fillOptions(idOptions, options ) {
-        document.getElementById(idOptions).innerHTML = 
+        document.getElementById(idOptions).innerHTML += 
         `${getOptions(options)}`
     }
     show() {

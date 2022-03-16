@@ -1,23 +1,15 @@
 export default class Spinner {
-    #spinnerElement
-    constructor(idSpinnerParent) {
-        this.#spinnerElement = document.getElementById(idSpinnerParent);
+    #spinnerParentElem
+    constructor(parentId) {
+        this.#spinnerParentElem = document.getElementById(parentId);
+
     }
-
-    async awaitWithSpinner(fn) {
-        this.#startSpinner();
-        const response = await fn;
-        this.#stopSpinner();
-        return response;
+    start() {
+        this.#spinnerParentElem.innerHTML = `<div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>`
     }
-
-    #startSpinner() {
-        this.#spinnerElement.style.display = "flex"
-    } 
-
-    #stopSpinner() {
-        this.#spinnerElement.style.display = "none"
+    stop() {
+        this.#spinnerParentElem.innerHTML=''
     }
-    
-
 }
