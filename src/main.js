@@ -23,7 +23,9 @@ const tableHandler = new TableHandler([
     { key: 'name', displayName: 'Course' },
     { key: 'lecturer', displayName: 'Lecturer' },
     { key: 'cost', displayName: "Cost (ILS)" },
-    { key: 'hours', displayName: "Duration (h)" }
+    { key: 'hours', displayName: "Duration (h)" },
+    { key: 'openingDate', displayName: "Date" }
+
 ], "courses-table", "sortCourses", "removeCourse");
 const formHandler = new FormHandler("courses-form", "alert");
 const generationHandler = new FormHandler("generation-form", "alert");
