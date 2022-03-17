@@ -9,11 +9,10 @@ export default class College {
         this.#courseData = courseData;
     }
     async addCourse(course) {
-        
         course.hours = +course.hours;
         course.cost = +course.cost;
+        course.openingDate = course.openingDate //getFullYear()}-${course.openingDate.getMonth().toString().padStart(2, '0')}-${course.openingDate.getDate().toString().padStart(2, '0')}`
         const validationMessage = this.#getValidationMessage(course);
-        course.openingDate = `${course.openingDate.getFullYear()}-${course.openingDate.getMonth().toString().padStart(2, '0')}-${course.openingDate.getDate().toString().padStart(2, '0')}`
         if(!validationMessage) {
             console.log(course);
            return await this.#courses.add(course);

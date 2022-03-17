@@ -32,13 +32,14 @@ const generationHandler = new FormHandler("generation-form", "alert");
 const navigator = new NavigatorButtons(["0","1","2", "3", "4"]);
 const spinner = new Spinner("spinner");
 const alertMessage = new Alert("alert-message")
+
 async function asyncRequestWithSpinner(asyncFn) {
     spinner.start();
     alertMessage.hideAlert()
     try {
         return await asyncFn();
     } catch (err) {
-        if(err.message.includes('NetworkError')) {
+        if(err.message.includes('Network Error')) {
             alertMessage.showAlert()
         } else {
             console.error(err)
@@ -49,7 +50,7 @@ async function asyncRequestWithSpinner(asyncFn) {
 }
 formHandler.addHandler(async course => {
     const res = await asyncRequestWithSpinner
-     (dataProcessor.addCourse.bind(dataProcessor, course)); //await dataProcessor.addCourse(course)
+     (dataProcessor.addCourse.bind(dataProcessor, course)); 
     if (typeof (res) !== 'string') {
         return '';
     }
